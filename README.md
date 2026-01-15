@@ -475,7 +475,7 @@ docker compose -f docker-compose-registry.yml logs --tail=30 paymybuddy-backend
 ```json
 {"repositories":["mysql","paymybuddy-backend"]}
 ```
-![Registry](screenshots/Registry-browser.png) ![login](login.png) ![Current balance](Current-balance.png)
+![Registry](screenshots/Registry-browser.png) ![login](screenshots/login.png) ![Current balance](screenshots/Current-balance.png)
 
 ---
 
