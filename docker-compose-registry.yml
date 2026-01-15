@@ -1,0 +1,56 @@
+version: '3.8'
+
+# Ce fichier docker-compose utilise les images depuis le registry privé
+# À utiliser après avoir pushé les images dans le registry local
+
+services:
+  # Service MySQL Database (depuis registry privé)
+  paymybuddy-db:
+    image: localhost:5000/mysql:8.0
+    container_name: paymybuddy-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "3306:3306"
+    volumes:
+      # Volume persistant pour les données MySQL
+      - mysql-data:/var/lib/mysql
+      # Montage du script d'initialisation SQL
+      - ./initdb:/docker-entrypoint-initdb.d
+    networks:
+      - paymybuddy-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Service Spring Boot Backend (depuis registry privé)
+  paymybuddy-backend:
+    image: localhost:5000/paymybuddy-backend:latest
+    container_name: paymybuddy-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+    depends_on:
+      paymybuddy-db:
+        condition: service_healthy
+    networks:
+      - paymybuddy-network
+
+# Réseau dédié pour l'isolation
+networks:
+  paymybuddy-network:
+    driver: bridge
+
+# Volume persistant pour MySQL
+volumes:
+  mysql-data:
+    driver: local

@@ -1,0 +1,41 @@
+# Maven
+target/classes
+target/test-classes
+target/maven-status
+target/generated-sources
+target/generated-test-sources
+target/surefire-reports
+target/maven-archiver
+
+# IDE
+.idea
+.vscode
+*.iml
+.classpath
+.project
+.settings/
+
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+*.md
+src/main/resources/readme/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tests
+src/test/
+
+# Source code (on garde seulement le JAR)
+src/
+
+# Conserver uniquement le JAR
+!target/*.jar
